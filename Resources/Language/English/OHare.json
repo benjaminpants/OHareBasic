@@ -1,0 +1,24 @@
+{"items":[
+
+{"key":"OHare_Agony","value":"AAAAAAAA-"},
+{"key":"OHare_ISay","value":"I say let it die!"},
+{"key":"OHare_LetItDie","value":"Let it die! Let it die! Let it shrivel up and die!"},
+{"key":"OHare_WhoWithMe","value":"Come on, whose with me, huh?"},
+{"key":"OHare_Clap","value":"*CLAP*"},
+{"key":"Sfx_OhareWind","value":"*O'HARE BRAND WIND*"},
+{"key":"PST_PRI_Baldi1","value":"O'Hare"},
+{"key":"PST_PRI_Baldi2","value":"Owner of the O'Hare brand, he has a remarkable hearing ability and constantly sings a catchy tune!"},
+{"key":"PST_HNT_Phone","value":"Students:\nPlease refrain from using the phone while Professor O'Hare is in the building.\n\nIt causes him to forget what he was doing and prevents him from hearing."},
+{"key":"PST_CHK_BaldiSays1","value":"O'Hare"},
+{"key":"PST_CHK_BaldiSays2","value":"Brand Chalk!"},
+{"key":"Event_BrokenRuler","value":"Uh oh! O'Hare has been consumed by the funky beats!"},
+{"key":"Men_MainDesc","value":"Play Hide-and-Seek with... O'Hare? \nUh oh... his strange slapping pattern may throw you off!"},
+{"key":"Men_ContDesc","value":"<color=green>Continue your game of Hide-and-Seek with O'Hare!</color>"},
+{"key":"Men_FreeDesc","value":"Explore <s>Baldi's</s> O'Hare's Super Schoolhouse to your heart's content! You can explore any level you've reached in Hide-and-Seek."},
+{"key":"Men_ChallengeDesc","value":"Try your hand at one of <s>Baldi</s> O'Hare's crazy challenges!"},
+{"key":"Event_Gravity","value":"Woah! Gravity is going crazy?! Is Baldi trying to get revenge??"},
+{"key":"Men_SpeedyChallenge","value":"It's just you and O'Hare in this challenge. The catch is, both of you move super fast! Can you think fast enough to collect 25 notebooks and escape the school?"},
+{"key":"Men_GrappleChallenge","value":"You're legs might be broken, but thankfully you're equipped with an infinite use <color=red>grappling hook</color>! See if you can outwit O'Hare plus Baldi's friends when this is your only way to move!"},
+{"key":"Men_EndlessDesc","value":"Collect as many notebooks as you can before O'Hare tags you! O'Hare speeds up over time, but notebooks slow him down!"}
+
+]}
