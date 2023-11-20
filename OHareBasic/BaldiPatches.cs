@@ -28,8 +28,11 @@ namespace OHareBasic
         }
         static IEnumerator StartTheHell(Baldi __instance, SpriteRenderer spr)
         {
-            yield return new WaitForSeconds(1.35f);
             bool rb = (bool)rulerBroken.GetValue(__instance);
+            if (!rb)
+            {
+                yield return new WaitForSeconds(1.35f);
+            }
             __instance.AudMan.PlaySingle(rb ? OHarePlugin.ohare_letItDieFunky : OHarePlugin.ohare_letItDie);
             yield return new WaitForSeconds(0.925f);
             __instance.ManualSlap();
