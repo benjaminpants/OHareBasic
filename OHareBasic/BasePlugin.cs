@@ -14,6 +14,7 @@ namespace OHareBasic
 
 
     [BepInPlugin("mtm101.rulerp.baldiplus.ohare", "O'Hare Over Baldi", "1.0.0.0")]
+    [BepInIncompatibility("sakyce.baldiplus.teachersadditions")]
     public class OHarePlugin : BaseUnityPlugin
     {
         public static OHarePlugin Instance;
