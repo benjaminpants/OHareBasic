@@ -5,7 +5,7 @@ using System.Linq;
 using BepInEx;
 using HarmonyLib;
 using MTM101BaldAPI;
-using MTM101BaldAPI.AssetManager;
+using MTM101BaldAPI.AssetTools;
 using UnityEngine;
 using static Rewired.Data.Mapping.HardwareJoystickMap;
 
@@ -86,7 +86,7 @@ namespace OHareBasic
 
         void AddSing(string chara)
         {
-            SoundObject obj = ObjectCreatorHandlers.CreateSoundObject(AssetManager.AudioClipFromMod(this, "let_it_grow_" + chara + ".wav"), "Vfx_LetItGrow1", SoundType.Voice, Color.white);
+            SoundObject obj = ObjectCreators.CreateSoundObject(AssetLoader.AudioClipFromMod(this, "let_it_grow_" + chara + ".wav"), "Vfx_LetItGrow1", SoundType.Voice, Color.white);
             if (chara != "cloudy")
             {
                 obj.additionalKeys = SingKeys;
@@ -103,26 +103,26 @@ namespace OHareBasic
         {
             Instance = this;
             Harmony harmony = new Harmony("mtm101.rulerp.baldiplus.ohare");
-            ohareSprite1 = AssetManager.SpriteFromTexture2D(AssetManager.TextureFromMod(this, "ohare1.png"), Vector2.one / 2, 27);
-            ohareSprite2 = AssetManager.SpriteFromTexture2D(AssetManager.TextureFromMod(this, "ohare2.png"), Vector2.one / 2, 27);
-            ohareSprite3 = AssetManager.SpriteFromTexture2D(AssetManager.TextureFromMod(this, "ohare3.png"), Vector2.one / 2, 27);
-            ohareSprite4 = AssetManager.SpriteFromTexture2D(AssetManager.TextureFromMod(this, "ohare4.png"), Vector2.one / 2, 27);
-            ohareSprite5 = AssetManager.SpriteFromTexture2D(AssetManager.TextureFromMod(this, "ohare5.png"), Vector2.one / 2, 27);
-            OHarePoster = AssetManager.TextureFromMod(this, "pri_ohare.png");
-            BadHare = AssetManager.SpriteFromTexture2D(AssetManager.TextureFromMod(this, "oharedead.png"));
-            ohare_Agony = ObjectCreatorHandlers.CreateSoundObject(AssetManager.AudioClipFromMod(this, "agony.wav"), "OHare_Agony", SoundType.Voice, new Color(0f, 153f / 255f, 236 / 255f));
-            ohare_ISay = ObjectCreatorHandlers.CreateSoundObject(AssetManager.AudioClipFromMod(this, "i_say.wav"), "OHare_ISay", SoundType.Voice, new Color(0f, 153f / 255f, 236 / 255f));
-            ohare_letItDie = ObjectCreatorHandlers.CreateSoundObject(AssetManager.AudioClipFromMod(this, "let_it_die.wav"), "OHare_LetItDie", SoundType.Voice, new Color(0f, 153f / 255f, 236 / 255f));
-            ohare_letItDieFunky = ObjectCreatorHandlers.CreateSoundObject(AssetManager.AudioClipFromMod(this, "let_it_die_funky.wav"), "OHare_LetItDie", SoundType.Voice, new Color(0f, 153f / 255f, 236 / 255f));
-            ohare_whoWithMe = ObjectCreatorHandlers.CreateSoundObject(AssetManager.AudioClipFromMod(this, "whos_with_me.wav"), "OHare_WhoWithMe", SoundType.Voice, new Color(0f, 153f / 255f, 236 / 255f));
-            ohare_clap = ObjectCreatorHandlers.CreateSoundObject(AssetManager.AudioClipFromMod(this, "clap.wav"), "OHare_Clap", SoundType.Effect, new Color(0f, 153f / 255f, 236 / 255f));
+            ohareSprite1 = AssetLoader.SpriteFromTexture2D(AssetLoader.TextureFromMod(this, "ohare1.png"), Vector2.one / 2, 27);
+            ohareSprite2 = AssetLoader.SpriteFromTexture2D(AssetLoader.TextureFromMod(this, "ohare2.png"), Vector2.one / 2, 27);
+            ohareSprite3 = AssetLoader.SpriteFromTexture2D(AssetLoader.TextureFromMod(this, "ohare3.png"), Vector2.one / 2, 27);
+            ohareSprite4 = AssetLoader.SpriteFromTexture2D(AssetLoader.TextureFromMod(this, "ohare4.png"), Vector2.one / 2, 27);
+            ohareSprite5 = AssetLoader.SpriteFromTexture2D(AssetLoader.TextureFromMod(this, "ohare5.png"), Vector2.one / 2, 27);
+            OHarePoster = AssetLoader.TextureFromMod(this, "pri_ohare.png");
+            BadHare = AssetLoader.SpriteFromTexture2D(AssetLoader.TextureFromMod(this, "oharedead.png"));
+            ohare_Agony = ObjectCreators.CreateSoundObject(AssetLoader.AudioClipFromMod(this, "agony.wav"), "OHare_Agony", SoundType.Voice, new Color(0f, 153f / 255f, 236 / 255f));
+            ohare_ISay = ObjectCreators.CreateSoundObject(AssetLoader.AudioClipFromMod(this, "i_say.wav"), "OHare_ISay", SoundType.Voice, new Color(0f, 153f / 255f, 236 / 255f));
+            ohare_letItDie = ObjectCreators.CreateSoundObject(AssetLoader.AudioClipFromMod(this, "let_it_die.wav"), "OHare_LetItDie", SoundType.Voice, new Color(0f, 153f / 255f, 236 / 255f));
+            ohare_letItDieFunky = ObjectCreators.CreateSoundObject(AssetLoader.AudioClipFromMod(this, "let_it_die_funky.wav"), "OHare_LetItDie", SoundType.Voice, new Color(0f, 153f / 255f, 236 / 255f));
+            ohare_whoWithMe = ObjectCreators.CreateSoundObject(AssetLoader.AudioClipFromMod(this, "whos_with_me.wav"), "OHare_WhoWithMe", SoundType.Voice, new Color(0f, 153f / 255f, 236 / 255f));
+            ohare_clap = ObjectCreators.CreateSoundObject(AssetLoader.AudioClipFromMod(this, "clap.wav"), "OHare_Clap", SoundType.Effect, new Color(0f, 153f / 255f, 236 / 255f));
             ohare_clap.subDuration = 0.35f;
-            airWind = ObjectCreatorHandlers.CreateSoundObject(AssetManager.AudioClipFromMod(this, "windblow.wav"), "Sfx_OhareWind", SoundType.Effect, new Color(1f,1f,1f));
+            airWind = ObjectCreators.CreateSoundObject(AssetLoader.AudioClipFromMod(this, "windblow.wav"), "Sfx_OhareWind", SoundType.Effect, new Color(1f,1f,1f));
 
-            priDirt = ObjectCreatorHandlers.CreateSoundObject(AssetManager.AudioClipFromMod(this, "pri_nodirtbag.wav"), "Vfx_PRI_NoDirtbag", SoundType.Voice, Color.white);
+            priDirt = ObjectCreators.CreateSoundObject(AssetLoader.AudioClipFromMod(this, "pri_nodirtbag.wav"), "Vfx_PRI_NoDirtbag", SoundType.Voice, Color.white);
 
-            airSpriteSmall = AssetManager.SpriteFromTexture2D(AssetManager.TextureFromMod(this, "AirIcon_Small.png"), Vector2.one / 2, 25);
-            airSpriteLarge = AssetManager.SpriteFromTexture2D(AssetManager.TextureFromMod(this, "AirIcon_Large.png"), Vector2.one / 2, 50);
+            airSpriteSmall = AssetLoader.SpriteFromTexture2D(AssetLoader.TextureFromMod(this, "AirIcon_Small.png"), Vector2.one / 2, 25);
+            airSpriteLarge = AssetLoader.SpriteFromTexture2D(AssetLoader.TextureFromMod(this, "AirIcon_Large.png"), Vector2.one / 2, 50);
 
             AddSing("principal");
             AddSing("bald");
@@ -147,7 +147,7 @@ namespace OHareBasic
             apple.itemSpriteLarge = OHarePlugin.airSpriteLarge;
             apple.itemSpriteSmall = OHarePlugin.airSpriteSmall;
             Resources.FindObjectsOfTypeAll<PosterObject>().Where(x => x.name == "BaldiPoster").First().baseTexture = OHarePlugin.OHarePoster;
-            OHarePlugin.MidiID = AssetManager.MidiFromFile(Path.Combine(AssetManager.GetModPath(OHarePlugin.Instance), "loraxchords.mid"), "letitgrow");
+            OHarePlugin.MidiID = AssetLoader.MidiFromFile(Path.Combine(AssetLoader.GetModPath(OHarePlugin.Instance), "loraxchords.mid"), "letitgrow");
             OHarePlugin.endObject = Resources.FindObjectsOfTypeAll<SceneObject>().Where(x => x.levelTitle == "YAY").First();
         }
     }
