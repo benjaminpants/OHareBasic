@@ -6,6 +6,7 @@ using BepInEx;
 using HarmonyLib;
 using MTM101BaldAPI;
 using MTM101BaldAPI.AssetTools;
+using MTM101BaldAPI.Registers;
 using UnityEngine;
 using static Rewired.Data.Mapping.HardwareJoystickMap;
 
@@ -13,7 +14,7 @@ namespace OHareBasic
 {
 
 
-    [BepInPlugin("mtm101.rulerp.baldiplus.ohare", "O'Hare Over Baldi", "1.0.0.0")]
+    [BepInPlugin("mtm101.rulerp.baldiplus.ohare", "O'Hare Over Baldi", "2.0.0.0")]
     [BepInIncompatibility("sakyce.baldiplus.teachersadditions")]
     public class OHarePlugin : BaseUnityPlugin
     {
@@ -37,6 +38,7 @@ namespace OHareBasic
         public static SoundObject ohare_clap;
         public static SoundObject airWind;
         public static SoundObject priDirt;
+        public static Texture2D loraxSays;
 
         public static string MidiID;
 
@@ -99,6 +101,11 @@ namespace OHareBasic
         }
 
 
+        void GeneratorChangers(string _, int __, CustomLevelObject clo)
+        {
+            clo.randomEvents.RemoveAll(x => x.selection.Type == RandomEventType.Snap);
+        }
+
         void Awake()
         {
             Instance = this;
@@ -108,8 +115,9 @@ namespace OHareBasic
             ohareSprite3 = AssetLoader.SpriteFromTexture2D(AssetLoader.TextureFromMod(this, "ohare3.png"), Vector2.one / 2, 27);
             ohareSprite4 = AssetLoader.SpriteFromTexture2D(AssetLoader.TextureFromMod(this, "ohare4.png"), Vector2.one / 2, 27);
             ohareSprite5 = AssetLoader.SpriteFromTexture2D(AssetLoader.TextureFromMod(this, "ohare5.png"), Vector2.one / 2, 27);
+            loraxSays = AssetLoader.TextureFromMod(this, "LoraxSpeaksPoster.png");
             OHarePoster = AssetLoader.TextureFromMod(this, "pri_ohare.png");
-            BadHare = AssetLoader.SpriteFromTexture2D(AssetLoader.TextureFromMod(this, "oharedead.png"));
+            BadHare = AssetLoader.SpriteFromTexture2D(AssetLoader.TextureFromMod(this, "oharedead.png"), 1f);
             ohare_Agony = ObjectCreators.CreateSoundObject(AssetLoader.AudioClipFromMod(this, "agony.wav"), "OHare_Agony", SoundType.Voice, new Color(0f, 153f / 255f, 236 / 255f));
             ohare_ISay = ObjectCreators.CreateSoundObject(AssetLoader.AudioClipFromMod(this, "i_say.wav"), "OHare_ISay", SoundType.Voice, new Color(0f, 153f / 255f, 236 / 255f));
             ohare_letItDie = ObjectCreators.CreateSoundObject(AssetLoader.AudioClipFromMod(this, "let_it_die.wav"), "OHare_LetItDie", SoundType.Voice, new Color(0f, 153f / 255f, 236 / 255f));
@@ -131,26 +139,24 @@ namespace OHareBasic
             AddSing("sweep");
             AddSing("cloudy");
 
-
+            GeneratorManagement.Register(this, GenerationModType.Finalizer, GeneratorChangers);
             harmony.PatchAllConditionals();
             Debug.Log("OHARE MODE ACTIVATE");
+
+            LoadingEvents.RegisterOnAssetsLoaded(Info, () =>
+            {
+                ItemObject apple = Resources.FindObjectsOfTypeAll<ItemObject>().Where(x => x.itemType == Items.Apple).First();
+                apple.itemSpriteLarge = OHarePlugin.airSpriteLarge;
+                apple.itemSpriteSmall = OHarePlugin.airSpriteSmall;
+                PosterObject[] posters = Resources.FindObjectsOfTypeAll<PosterObject>();
+                posters.Where(x => x.name == "BaldiPoster").First().baseTexture = OHarePlugin.OHarePoster;
+                OHarePlugin.MidiID = AssetLoader.MidiFromFile(Path.Combine(AssetLoader.GetModPath(OHarePlugin.Instance), "loraxchords.mid"), "letitgrow");
+                OHarePlugin.endObject = Resources.FindObjectsOfTypeAll<SceneObject>().Where(x => x.levelTitle == "YAY").First();
+                posters.Where(x => x.baseTexture != null).Where(x => x.baseTexture.name == "BaldiSpeaksPoster").Do(x => x.baseTexture = loraxSays);
+            }, true);
         }
     }
 
-    [HarmonyPatch(typeof(NameManager))]
-    [HarmonyPatch("Awake")]
-    class NameAwakePatch
-    {
-        static void Prefix()
-        {
-            ItemObject apple = Resources.FindObjectsOfTypeAll<ItemObject>().Where(x => x.itemType == Items.Apple).First();
-            apple.itemSpriteLarge = OHarePlugin.airSpriteLarge;
-            apple.itemSpriteSmall = OHarePlugin.airSpriteSmall;
-            Resources.FindObjectsOfTypeAll<PosterObject>().Where(x => x.name == "BaldiPoster").First().baseTexture = OHarePlugin.OHarePoster;
-            OHarePlugin.MidiID = AssetLoader.MidiFromFile(Path.Combine(AssetLoader.GetModPath(OHarePlugin.Instance), "loraxchords.mid"), "letitgrow");
-            OHarePlugin.endObject = Resources.FindObjectsOfTypeAll<SceneObject>().Where(x => x.levelTitle == "YAY").First();
-        }
-    }
 
     [ConditionalPatchNever]
     [HarmonyPatch(typeof(GameLoader))]

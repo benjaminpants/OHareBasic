@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.ComponentModel;
 using System.Reflection;
 using BepInEx;
 using HarmonyLib;
@@ -13,14 +14,13 @@ namespace OHareBasic
     class StartPatch
     {
         static FieldInfo subtitleColor = AccessTools.Field(typeof(AudioManager), "subtitleColor");
-        static FieldInfo rulerBroken = AccessTools.Field(typeof(Baldi), "rulerBroken");
+        static FieldInfo rulerBroken = AccessTools.Field(typeof(Baldi), "breakRuler");
 
-        static void Prefix(Baldi __instance, ref Animator ___animator, ref float ___delay, ref AudioManager ___audMan, ref SoundObject ___slap)
+        static void Prefix(Baldi __instance, ref Animator ___animator, ref AudioManager ___audMan, ref SoundObject ___slap)
         {
-            SpriteRenderer spr = __instance.gameObject.transform.Find("SpriteBase").Find("Sprite").GetComponent<SpriteRenderer>();
+            SpriteRenderer spr = __instance.spriteRenderer[0];
             spr.sprite = OHarePlugin.ohareSprite3;
             ___animator.enabled = false;
-            ___delay = float.PositiveInfinity;
             subtitleColor.SetValue(___audMan, new Color(0f, 153f / 255f, 236 / 255f));
             ___audMan.PlaySingle(OHarePlugin.ohare_ISay);
             ___slap = OHarePlugin.ohare_clap;
@@ -35,17 +35,17 @@ namespace OHareBasic
             }
             __instance.AudMan.PlaySingle(rb ? OHarePlugin.ohare_letItDieFunky : OHarePlugin.ohare_letItDie);
             yield return new WaitForSeconds(0.925f);
-            __instance.ManualSlap();
+            __instance.Slap();
             yield return new WaitForSeconds(0.625f);
-            __instance.ManualSlap();
+            __instance.Slap();
             yield return new WaitForSeconds(0.6f);
-            __instance.ManualSlap();
+            __instance.Slap();
             yield return new WaitForSeconds(0.6f);
-            __instance.ManualSlap();
+            __instance.Slap();
             yield return new WaitForSeconds(0.6f);
-            __instance.ManualSlap();
+            __instance.Slap();
             yield return new WaitForSeconds(0.6f);
-            __instance.ManualSlap();
+            __instance.Slap();
             yield return new WaitForSeconds(0.40f);
             // give them a break from the O'Hell
             if (!rb)
@@ -61,7 +61,7 @@ namespace OHareBasic
     }
 
     [HarmonyPatch(typeof(Baldi))]
-    [HarmonyPatch("Pause")]
+    [HarmonyPatch("Praise")]
     class PausePatch
     {
         static bool Prefix()
@@ -81,62 +81,24 @@ namespace OHareBasic
     }
 
     [HarmonyPatch(typeof(Baldi))]
-    [HarmonyPatch("OnTriggerEnter")]
+    [HarmonyPatch("TakeApple")]
     class OnTriggerEnterPatch
     {
 
-        static FieldInfo fi = AccessTools.Field(typeof(Baldi), "eatingApple");
-
-        static bool Prefix(Baldi __instance, Collider other, ref bool ___eatingApple, ref bool ___paused, ref bool ___rulerBroken)
+        static bool Prefix(Baldi __instance)
         {
-            if (___eatingApple)
-            {
-                return false;
-            }
-            if (other.tag == "Player")
-            {
-                PlayerManager component = other.GetComponent<PlayerManager>();
-                ItemManager itm = component.itm;
-                if (!component.invincible && !___paused)
-                {
-                    if (itm.Has(Items.Apple) && !___eatingApple)
-                    {
-                        itm.Remove(Items.Apple);
-                        MovementModifier mm = new MovementModifier((__instance.Navigator.Velocity.normalized * component.plm.runSpeed), 0.1f);
-                        ActivityModifier am = __instance.GetComponent<ActivityModifier>();
-                        am.moveMods.Add(mm);
-                        __instance.AudMan.PlaySingle(OHarePlugin.airWind);
-                        __instance.StartCoroutine(Air(__instance, am, mm));
-                        ___eatingApple = true;
-                        return false;
-                    }
-                }
-            }
-            return !___rulerBroken;
-        }
-
-        static IEnumerator Air(Baldi instance, ActivityModifier am, MovementModifier mm)
-        {
-            float time = instance.appleTime;
-            while (time > 0f)
-            {
-                time -= Time.deltaTime * instance.ec.NpcTimeScale;
-                yield return null;
-            }
-            instance.AudMan.FlushQueue(true);
-            fi.SetValue(instance, false); //because we cant have refs in ienumerators
-            am.moveMods.Remove(mm);
-            yield break;
+            __instance.behaviorStateMachine.ChangeState(new OHare_StupidState(__instance, __instance, __instance.behaviorStateMachine.currentState));
+            return false;
         }
     }
 
     [HarmonyPatch(typeof(Baldi))]
-    [HarmonyPatch("Slapped")]
+    [HarmonyPatch("Slap")]
     class SlapPatch
     {
         static void Prefix(Baldi __instance)
         {
-            SpriteRenderer spr = __instance.gameObject.transform.Find("SpriteBase").Find("Sprite").GetComponent<SpriteRenderer>();
+            SpriteRenderer spr = __instance.spriteRenderer[0];
             spr.sprite = OHarePlugin.ohareSprite2;
             __instance.StopCoroutine(ResetAnimation(spr));
             __instance.StartCoroutine(ResetAnimation(spr));
@@ -152,13 +114,13 @@ namespace OHareBasic
         }
     }
 
-    [HarmonyPatch(typeof(Baldi))]
-    [HarmonyPatch("GetAngry")]
+    [HarmonyPatch(typeof(Baldi_Chase))]
+    [HarmonyPatch("Update")]
     class AngryPatch
     {
-        static void Postfix(ref float ___delay)
+        static void Prefix(ref float ___delayTimer)
         {
-            ___delay = float.PositiveInfinity;
+            ___delayTimer = float.PositiveInfinity;
         }
     }
 }
